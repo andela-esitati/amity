@@ -28,6 +28,8 @@ class Office(Room):
 
 class LivingSpace(Room):
 
+    capacity = 4
+
     def __init__(self, name):
         super(LivingSpace, self).__init__(name)
 
