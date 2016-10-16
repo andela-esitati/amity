@@ -1,4 +1,5 @@
-from rooms import Office, LivingSpace
+from person import Fellow, Staff
+from rooms import LivingSpace, Office
 
 
 class Amity(object):
@@ -17,4 +18,19 @@ class Amity(object):
         self.all_allocated_people = []
         self.all_unallocated_people = []
         self.allocated_fellows = []
-        self.unallocated_staff = []
+        self.unallocated_fellows = []
+
+# create_room('Ocxulus', 'livingspace')
+# create_room({'livingspace': ['A', 'S']})
+
+    def create_room(self, name, type_room):
+        '''this method create rooms.its can create multiple rooms'''
+        if type_room == 'livingspace':
+            room = LivingSpace(name)
+            self.livingspaces.append(room)
+            self.all_rooms.append(room)
+
+        elif type_room == 'office':
+            room = Office(name)
+            self.office_rooms.append(room)
+            self.all_rooms.append(room)
