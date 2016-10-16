@@ -23,7 +23,7 @@ class Office(Room):
         super(Office, self).__init__(name)
 
         def __repr__(self):
-            return '<Office %s' % self.name
+            return '<Office %s >' % self.name
 
 
 class LivingSpace(Room):
@@ -34,4 +34,4 @@ class LivingSpace(Room):
         super(LivingSpace, self).__init__(name)
 
     def __repr__(self):
-        return '<Office %s' % self.name
+        return '<LivingSpace %s >' % self.name
