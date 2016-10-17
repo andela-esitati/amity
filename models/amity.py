@@ -34,33 +34,41 @@ class Amity(object):
             self.office_rooms.append(room)
             self.all_rooms.append(room)
 
-    def add_person(self, name, role, wants_accomodation=N):
-        if role == 'Staff':
-            person = Staff(name)
-            self.staff.append(person)
-            self.all_people.append(person)
-        elif role == 'Fellow':
-            person = Fellow(name, wants_accomodation)
+    def add_person(self, name, role, wants_accomodation='N'):
+        if role == 'fellow':
+            person = Fellow(name)
+            # pick an office at random from the office_list
+            randomized_office = random.choice(self.office_rooms)
+            # assign an office to a person
+            if randomized_office.is_not_full:
+                person.office = randomized_office
+                # adding a person to the member list in office
+                randomized_office.members.append(person)
+            if wants_accomodation == 'Y':
+                # pick a random living space from living space lists
+                random_livingspace = random.choice(self.livingspaces)
+                if random_livingspace.is_not_full:
+                    # assign living space to a person
+                    person.hostel = random_livingspace
+                    # add a person to the member list in office
+                    random_livingspace.members.append(person)
+            # add the person to fellows list
             self.fellows.append(person)
+            # add the person to all rooms
             self.all_people.append(person)
 
-         # the indexes of the office list randomized
-        randomized_offices_list = random.shuffle(self.office_rooms)
-        last_room_index = len(randomized_offices_list - 1)
-        room_index = 0
-        while(room_index <= last_room_index):
+        elif role == 'staff':
+            person = Staff(name)
+            # pick a random office
+            randomized_office = random.choice(self.office_rooms)
+            if randomized_office.is_not_full:
+                # assign an office to a person
+                person.office = randomized_office
+                # adding a person to the member list in staff
+                randomized_office.members.append(person)
 
-            if not randomized_offices_list[room_index].is_full:
-                randomized_offices_list[room_index].append(person)
-                break
-            else:
-                room_index += 1
-
-            if room_index == last_room_index and randomized_offices_list[last_room_index].is_full:
-                self.all_unallocated_people.append(person)
-                return 'all rooms are full '
-
-
-               
-
-        # now getting the office and adding a person to the member list
+            # assign the person to the staff list
+            self.staff.append(person)
+            # add staff to all people
+            self.all_people.append(person)
+       
