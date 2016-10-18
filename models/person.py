@@ -13,8 +13,6 @@ class Person(object):
 
 class Staff(Person):
 
-    role = 'Staff'
-
     def __init__(self, name):
         super(Staff, self).__init__(name)
         self.employer_id = id(self)
@@ -25,7 +23,6 @@ class Staff(Person):
 
 class Fellow(Person):
 
-    role = 'Fellow'
     hostel = 'None'
 
     def __init__(self, name, wants_accomodation='N'):
