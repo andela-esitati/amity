@@ -22,6 +22,13 @@ class TestAmity(unittest.TestCase):
         self.amity.create_room('valhalla', 'office')
         self.assertEqual(len(office), 1)
 
+    def test_living_space_is_created(self):
+        '''test to confirm that living space is created'''
+        livingspace = self.amity.livingspaces
+        self.assertEqual(len(livingspace), 0)
+        self.amity.create_room('php', 'livingspace')
+        self.assertEqual(len(livingspace), 1)
+
     
 
 
