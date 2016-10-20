@@ -14,7 +14,7 @@ class TestAmity(unittest.TestCase):
         self.amity.create_room('haskel', 'livingspace')
         # checking to see if rooms have been added
         self.assertEqual(len(rooms), 1)
-    
+
     def test_office_is_created(self):
         '''test to confirm an office is created'''
         office = self.amity.office_rooms
@@ -29,6 +29,10 @@ class TestAmity(unittest.TestCase):
         self.amity.create_room('php', 'livingspace')
         self.assertEqual(len(livingspace), 1)
 
-    
-
-
+    def test_fellow_is_created(self):
+        '''tesst to confirm a fellow is created'''
+        self.amity.create_room('valhalla', 'office')
+        fellow = self.amity.fellows
+        self.assertEqual(len(fellow), 0)
+        self.amity.add_person('chironde', 'fellow')
+        self.assertEqual(len(fellow), 1)
