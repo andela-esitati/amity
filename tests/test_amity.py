@@ -36,3 +36,23 @@ class TestAmity(unittest.TestCase):
         self.assertEqual(len(fellow), 0)
         self.amity.add_person('chironde', 'fellow')
         self.assertEqual(len(fellow), 1)
+
+    def test_staff_is_created(self):
+        '''test to confirm staff is created'''
+        self.amity.create_room('hogwarts', 'office')
+        staff = self.amity.staff
+        self.assertEqual(len(staff), 0)
+        self.amity.add_person('njira', 'staff')
+        self.assertEqual(len(staff), 1)
+
+    def test_people_are_added_to_all_peole_list(self):
+        '''test if all people are added to the people list
+        regardles wether they are fellows or staff '''
+        everyone = self.amity.all_people
+        self.assertEqual(len(everyone), 0)
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        self.amity.add_person('njira', 'staff')
+        self.amity.add_person('joy', 'fellow', 'Y')
+        self.assertEqual(len(everyone),2)
+
