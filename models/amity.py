@@ -112,7 +112,7 @@ class Amity(object):
                 information = line.split()
                 first_name = information[0]
                 second_name = information[1]
-                name = first_name + ' ' +second_name
+                name = first_name + ' ' + second_name
                 person_role = information[2].lower()
                 # look for wanting accomadation option
                 try:
@@ -121,6 +121,25 @@ class Amity(object):
                 except IndexError:
                     pass
                 self.add_person(name, person_role, staying)
+
+    def print_allocations(self, filename):
+        '''this function prints everyone who has been alloacted a room'''
+        rooms = self.all_rooms
+        if filename is None:
+            # go through all rooms in amity
+            for room in rooms:
+                # go through each member in a room
+                for member in room.members:
+                    print member
+        else:
+            for room in rooms:
+                for member in room.members:
+                    with open(filename, 'a') as allocated_people:
+                        allocated_people.write(member)
+
+
+
+
 
 
 amity = Amity()
@@ -145,3 +164,5 @@ print amity.office_rooms[1].members
 print 'hae'
 amity.load_people('people.txt')
 print amity.all_people
+print 'hae'
+amity.print_allocations()
