@@ -73,10 +73,14 @@ class TestAmity(unittest.TestCase):
         person_name = person.name
         self.assertEqual(person_name, 'jackie')
 
-
-
-
-
-
-        
-        
+    def test_a_person_has_been_reallocated(self):
+        '''test that a person has been reallocated to a different room'''
+        self.amity.create_room('mordor', 'office')
+        self.amity.add_person('joshua', 'staff')
+        staff = self.amity.staff[0]
+        office_name = staff.office.name
+        self.assertEqual(office_name, 'mordor')
+        self.amity.create_room('winterfell', 'office')
+        self.amity.reallocate_person('joshua', 'winterfell')
+        new_office_name = staff.office.name
+        self.assertEqual(new_office_name, 'winterfell')
