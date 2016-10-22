@@ -10,16 +10,9 @@ class Amity(object):
         self.all_rooms = []
         self.office_rooms = []
         self.livingspaces = []
-        self.all_vacant_rooms = []
-        self.vacant_offices = []
-        self.vacant_living_space = []
         self.all_people = []
         self.fellows = []
         self.staff = []
-        self.all_allocated_people = []
-        self.all_unallocated_people = []
-        self.allocated_fellows = []
-        self.unallocated_fellows = []
 
     def create_room(self, name, type_room):
         '''this method create rooms.its can create multiple rooms'''
@@ -122,7 +115,7 @@ class Amity(object):
                     pass
                 self.add_person(name, person_role, staying)
 
-    def print_allocations(self, filename):
+    def print_allocations(self, filename='nofilename'):
         '''this function prints everyone who has been alloacted a room'''
         rooms = self.all_rooms
         if filename is None:
@@ -135,11 +128,31 @@ class Amity(object):
             for room in rooms:
                 for member in room.members:
                     with open(filename, 'a') as allocated_people:
-                        allocated_people.write(member)
+                        allocated_people.write(member.name)
 
-
-
-
+    def print_un_allocated(self, filename='nofilename'):
+        '''this fuction prints a list of all fellows without living spaces'''
+        if filename is None:
+            allocated_people = []
+            hostels = self.livingspaces
+            for hostel in hostels:
+                for member in hostel.members:
+                    allocated_people.append(member)
+            fellows = self.fellows
+            for fellow in fellows:
+                if fellow not in allocated_people:
+                    print fellow.name
+        else:
+            allocated_people = []
+            hostels = self.livingspaces
+            for hostel in hostels:
+                for member in hostel.members:
+                    allocated_people.append(member)
+            fellows = self.fellows
+            for fellow in fellows:
+                if fellow not in allocated_people:
+                    with open(filename, 'a') as unallocated_people:
+                        unallocated_people.write(fellow.name)
 
 
 amity = Amity()
@@ -166,3 +179,5 @@ amity.load_people('people.txt')
 print amity.all_people
 print 'hae'
 amity.print_allocations()
+print 'unallocated'
+amity.print_un_allocated()
