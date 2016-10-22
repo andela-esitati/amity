@@ -54,5 +54,29 @@ class TestAmity(unittest.TestCase):
         self.amity.create_room('php', 'livingspace')
         self.amity.add_person('njira', 'staff')
         self.amity.add_person('joy', 'fellow', 'Y')
-        self.assertEqual(len(everyone),2)
+        self.assertEqual(len(everyone), 2)
 
+    def test_person_is_allocated_a_room(self):
+        '''test if a person has been reallocated to a specified room'''
+        self.amity.create_room('occulus', 'office')
+        self.amity.add_person('rehema', 'fellow')
+        person = self.amity.fellows[0]
+        roomname = person.office.name
+        self.assertEqual(roomname, 'occulus')
+
+    def test_a_room_has_a_person(self):
+        '''test a that rooms take in people'''
+        self.amity.create_room('cyan', 'office')
+        self.amity.add_person('jackie', 'fellow')
+        office = self.amity.office_rooms[0]
+        person = office.members[0]
+        person_name = person.name
+        self.assertEqual(person_name, 'jackie')
+
+
+
+
+
+
+        
+        
