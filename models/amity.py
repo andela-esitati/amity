@@ -34,6 +34,7 @@ class Amity(object):
             self.all_rooms.append(room)
 
     def add_person(self, name, role, wants_accomodation='N'):
+        '''this method creates a person and allocats the person a room'''
         if role == 'fellow':
             person = Fellow(name)
             # pick an office at random from the office_list
@@ -101,15 +102,46 @@ class Amity(object):
                         person_found.hostel.members.remove(person_found)
                         person_found.hostel = person_found
 
+    def load_people(self, file):
+        '''this function reads a lists of people and allocates them a room'''
+        with open(file, 'r') as file:
+            # read the file content line by line
+            file_content = file.readlines()
+            # go through the list of file content
+            for line in file_content:
+                information = line.split()
+                first_name = information[0]
+                second_name = information[1]
+                name = first_name + ' ' +second_name
+                person_role = information[2].lower()
+                # look for wanting accomadation option
+                try:
+                    staying = information[3]
+                # incase there is no accomodation info
+                except IndexError:
+                    pass
+                self.add_person(name, person_role, staying)
+
 
 amity = Amity()
 amity.create_room('valhalla', 'office')
-amity.create_room('oculus', 'office')
+amity.create_room('php', 'livingspace')
 amity.create_room('haskel', 'livingspace')
+amity.add_person('sam', 'fellow')
 print amity.all_rooms
-amity.add_person('stan', 'fellow', 'Y')
-amity.add_person('elsis', 'staff')
-v = amity.all_rooms[1]
-print v.members
-amity.reallocate_person('elsis','valhalla')
-print v.members
+print amity.office_rooms
+y = amity.fellows[0]
+print y
+print y.office
+print amity.office_rooms[0].members
+amity.create_room('hogwarts', 'office')
+print amity.all_rooms
+print amity.office_rooms
+amity.reallocate_person('sam', 'hogwarts')
+y = amity.fellows[0]
+print y.office
+print amity.office_rooms[0].members
+print amity.office_rooms[1].members
+print 'hae'
+amity.load_people('people.txt')
+print amity.all_people
