@@ -154,6 +154,17 @@ class Amity(object):
                     with open(filename, 'a') as unallocated_people:
                         unallocated_people.write(fellow.name)
 
+    def print_room(self, room_name):
+        '''this function prints the members of a given room'''
+        rooms = self.all_rooms
+        for room in rooms:
+            if room_name == room.name:
+                for member in room.members:
+                    print member.name
+
+
+
+
 
 amity = Amity()
 amity.create_room('valhalla', 'office')
@@ -181,3 +192,5 @@ print 'hae'
 amity.print_allocations()
 print 'unallocated'
 amity.print_un_allocated()
+print 'members'
+amity.print_room('php')
