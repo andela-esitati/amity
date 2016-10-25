@@ -19,12 +19,14 @@ class Amity(object):
 
     def create_room(self, name, type_room):
         '''this method create rooms.its can create multiple rooms'''
-        if type_room == 'livingspace':
+        print name
+        print type_room
+        if type_room.lower() == 'livingspace':
             room = LivingSpace(name)
             self.livingspaces.append(room)
             self.all_rooms.append(room)
 
-        elif type_room == 'office':
+        elif type_room.lower() == 'office':
             room = Office(name)
             self.office_rooms.append(room)
             self.all_rooms.append(room)
@@ -34,6 +36,7 @@ class Amity(object):
         if role == 'fellow':
             person = Fellow(name)
             # pick an office at random from the office_list
+            # import pdb; pdb.set_trace()
             randomized_office = random.choice(self.office_rooms)
             # assign an office to a person
             if randomized_office.is_not_full:
@@ -218,34 +221,71 @@ class Amity(object):
                 hostel_room.name = room.name
                 session.add(hostel_room)
 
+    def load_state(self, db_name='amity_db'):
+        '''this method gets data from the database and feeds it to the app'''
+        if db_name is None:
+            engine = create_engine('sqlite:///amity_db')
+        else:
+            engine = create_engine('sqlite:///%s' % db_name)
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        people = session.query(Mtu).all()
+        offices = session.query(Ofisi).all()
+        livingspaces = session.query(Hostel).all()
+        for person in people:
+            full_name = person.name
+            role = person.role
+            if role == 'Staff':
+                person_object = Staff(full_name)
+                self.staff.append(person_object)
+                self.all_people.append(person_object)
+            elif role == 'Fellow':
+                person_object = Fellow(full_name)
+                self.fellows.append(person_object)
+                self.all_people.append(person_object)
 
-amity = Amity()
-amity.create_room('valhalla', 'office')
-amity.create_room('php', 'livingspace')
-amity.create_room('haskel', 'livingspace')
-amity.add_person('sam', 'fellow')
-print amity.all_rooms
-print amity.office_rooms
-y = amity.fellows[0]
-print y
-print y.office
-print amity.office_rooms[0].members
-amity.create_room('hogwarts', 'office')
-print amity.all_rooms
-print amity.office_rooms
-amity.reallocate_person('sam', 'hogwarts')
-y = amity.fellows[0]
-print y.office
-print amity.office_rooms[0].members
-print amity.office_rooms[1].members
-print 'hae'
-amity.load_people('people.txt')
-print amity.all_people
-print 'hae'
-amity.print_allocations()
-print 'unallocated'
-amity.print_un_allocated()
-print 'members'
-amity.print_room('php')
-print 'save state'
-amity.save_state()
+        for office in offices:
+            office_name = office.name
+            office_object = Office(office_name)
+            self.office_rooms.append(office_object)
+            self.all_rooms.append(office_object)
+
+        for hostel in livingspaces:
+            hostel_name = hostel.name
+            hostel_object = LivingSpace(hostel_name)
+            self.livingspaces.append(hostel_object)
+            self.all_rooms.append(hostel_object)
+
+
+# amity = Amity()
+# amity.create_room('valhalla', 'office')
+# amity.create_room('php', 'livingspace')
+# amity.create_room('haskel', 'livingspace')
+# amity.add_person('sam maina', 'fellow')
+# print amity.all_rooms
+# print amity.office_rooms
+# y = amity.fellows[0]
+# print y
+# print y.office
+# print amity.office_rooms[0].members
+# amity.create_room('hogwarts', 'office')
+# print amity.all_rooms
+# print amity.office_rooms
+# amity.reallocate_person('sam maina', 'hogwarts')
+# y = amity.fellows[0]
+# print y.office
+# print amity.office_rooms[0].members
+# print amity.office_rooms[1].members
+# print 'hae'
+# amity.load_people('people.txt')
+# print amity.all_people
+# print 'hae'
+# amity.print_allocations()
+# print 'unallocated'
+# amity.print_un_allocated()
+# print 'members'
+# amity.print_room('php')
+# print 'save state'
+# amity.save_state()
+# print 'load_state'
+# amity.load_state()
