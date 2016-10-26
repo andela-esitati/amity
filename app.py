@@ -22,6 +22,7 @@ Options:
 from docopt import docopt, DocoptExit
 import cmd
 from app.amity import Amity
+from app.person import Fellow,Staff
 
 amity = Amity()
 
@@ -109,7 +110,16 @@ class AmityInteractive(cmd.Cmd):
         filename = arg['<file_name>']
         amity.load_people(filename)
         print 'People in %s have been added and allocated rooms' % filename
-        print '%s ' % amity.all_people
+        for person in amity.all_people:
+            if isinstance(person, Fellow):
+                office = person.office.name
+                livingspace = person.hostel.name
+                print '%s %s %s' % (person, office, livingspace)
+            elif isinstance(person, Staff):
+                office = person.office.name
+                print '%s %s' % (person, office)
+
+        # print '%s ' % amity.all_people
 
     @docopt_cmd
     def do_print_allocations(self, arg):
@@ -146,14 +156,22 @@ class AmityInteractive(cmd.Cmd):
     @docopt_cmd
     def do_save_state(self, arg):
         """
-        This function prints the members of a given room
+        This methods saves informatin from the application to the database
         Usage:
             save_state [--db_name=amity_db]
         """
         db_name = arg['--db_name']
         amity.save_state(db_name)
 
-
+    @docopt_cmd
+    def do_load_state(self, arg):
+        """
+        This method loads information from the databse to the application
+        Usage:
+            load_state [--db_name=amity_db]
+        """
+        db_name = arg['--db_name']
+        amity.load_state(db_name)
 
 
 if __name__ == '__main__':
