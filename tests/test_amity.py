@@ -92,10 +92,15 @@ class TestAmity(unittest.TestCase):
         members = office.members
         self.assertEqual(len(members), 1)
         self.amity.create_room('Occulus', 'office')
-        self.amity.reallocate_person('rehema','Occulus')
+        self.amity.reallocate_person('rehema', 'Occulus')
         office = self.amity.office_rooms[0]
         members = office.members
         self.assertEqual(len(members), 0)
-        
 
-
+    def test_print_unallocations_to_terminal(self):
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        self.amity.add_person('sam maina', 'staff')
+        self.amity.add_person('tom wilkins', 'fellow')
+        self.amity.add_person('valt honks', 'fellow', 'Y')
+        self.amity.print_allocations(None)
