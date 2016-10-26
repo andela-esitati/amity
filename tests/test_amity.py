@@ -97,10 +97,30 @@ class TestAmity(unittest.TestCase):
         members = office.members
         self.assertEqual(len(members), 0)
 
-    def test_print_unallocations_to_terminal(self):
+    def test_print_allocations_to_terminal(self):
         self.amity.create_room('hogwarts', 'office')
         self.amity.create_room('php', 'livingspace')
         self.amity.add_person('sam maina', 'staff')
         self.amity.add_person('tom wilkins', 'fellow')
         self.amity.add_person('valt honks', 'fellow', 'Y')
         self.amity.print_allocations(None)
+
+    def test_print_allocations_file(self):
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        self.amity.add_person('sam maina', 'staff')
+        self.amity.add_person('tom wilkins', 'fellow')
+        self.amity.add_person('valt honks', 'fellow', 'Y')
+        self.amity.print_allocations('allocations.txt')
+
+    def test_people_without_rooms_are_added_to_unallocated_list(self):
+        unallocated = self.amity.unallocated
+        self.assertEqual(len(unallocated), 0)
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        self.amity.add_person('sam gaamwa', 'fellow')
+        self.amity.add_person('tom wilkins', 'fellow')
+        self.amity.add_person('tom shitonde', 'fellow', 'Y')
+        self.amity.print_un_allocated(None)
+        unallocated = self.amity.unallocated
+        self.assertEqual(len(unallocated), 2)
