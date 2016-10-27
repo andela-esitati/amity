@@ -169,16 +169,6 @@ class TestAmity(unittest.TestCase):
         self.amity.print_allocations(None)
         self.assertEqual(len(allocated), 3)
 
-    def test_staff_are_allocated_to_allocated_list(self):
-        '''test that an allocated staff is added to allocated list'''
-        self.amity.create_room('hogwarts', 'office')
-        self.amity.create_room('php', 'livingspace')
-        self.amity.add_person('sam maina', 'staff')
-        self.amity.print_allocations(None)
-        allocated = self.amity.allocated
-        staff = allocated[0]
-        self.assertIsInstance(staff, Staff)
-
     def test_fellow_are_allocated_to_allocated_list(self):
         '''test that an allocated staff is added to allocated list'''
         self.amity.create_room('hogwarts', 'office')
@@ -187,6 +177,16 @@ class TestAmity(unittest.TestCase):
         self.amity.print_allocations(None)
         allocated = self.amity.allocated
         fellow = allocated[0]
+        self.assertIsInstance(fellow, Fellow)
+
+    def test_fellow_are_allocated_to_unallocated_list(self):
+        '''test that the person in an unallocated list is a fellow'''
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        self.amity.add_person('sam maina', 'fellow')
+        self.amity.print_un_allocated(None)
+        unallocated = self.amity.unallocated
+        fellow = unallocated[0]
         self.assertIsInstance(fellow, Fellow)
 
     def test_unalloacted_people_are_added_to_unallocated_list(self):
@@ -200,3 +200,15 @@ class TestAmity(unittest.TestCase):
         self.amity.add_person('tom wilkins', 'fellow')
         self.amity.print_un_allocated(None)
         self.assertEqual(len(unallocated), 2)
+
+    def test_load_people_from_file(self):
+        '''test that people are added from a list and given a room'''
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        staff_list = self.amity.staff
+        fellows_list = self.amity.fellows
+        self.assertEqual(len(staff_list), 0)
+        self.assertEqual(len(fellows_list), 0)
+        self.amity.load_people("test_people.txt")
+        self.assertEqual(len(staff_list), 3)
+        self.assertEqual(len(fellows_list), 4)
