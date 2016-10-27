@@ -1,5 +1,6 @@
 import unittest
 from ..app.amity import Amity
+from ..app.person import Fellow, Staff
 
 
 class TestAmity(unittest.TestCase):
@@ -86,6 +87,7 @@ class TestAmity(unittest.TestCase):
         self.assertEqual(new_office_name, 'winterfell')
 
     def test_a_person_has_been_removed_from_a_room_after_reallocation(self):
+        '''test that a person has been removed from a room after reallocation'''
         self.amity.create_room('hogwarts', 'office')
         self.amity.add_person('rehema', 'fellow')
         office = self.amity.office_rooms[0]
@@ -98,6 +100,7 @@ class TestAmity(unittest.TestCase):
         self.assertEqual(len(members), 0)
 
     def test_print_allocations_to_terminal(self):
+        '''test that allocated people are printed to the terminal'''
         self.amity.create_room('hogwarts', 'office')
         self.amity.create_room('php', 'livingspace')
         self.amity.add_person('sam maina', 'staff')
@@ -106,6 +109,7 @@ class TestAmity(unittest.TestCase):
         self.amity.print_allocations(None)
 
     def test_print_allocations_file(self):
+        '''test that allocated people are printed to a file'''
         self.amity.create_room('hogwarts', 'office')
         self.amity.create_room('php', 'livingspace')
         self.amity.add_person('sam maina', 'staff')
@@ -114,6 +118,7 @@ class TestAmity(unittest.TestCase):
         self.amity.print_allocations('allocations.txt')
 
     def test_people_without_rooms_are_added_to_unallocated_list(self):
+        '''test that people without rooms are added to unallocated list'''
         unallocated = self.amity.unallocated
         self.assertEqual(len(unallocated), 0)
         self.amity.create_room('hogwarts', 'office')
@@ -126,6 +131,7 @@ class TestAmity(unittest.TestCase):
         self.assertEqual(len(unallocated), 2)
 
     def test_print_unallocated_people_to_terminal(self):
+        '''test that unallocated people are printed to a the terminal'''
         self.amity.create_room('hogwarts', 'office')
         self.amity.create_room('php', 'livingspace')
         self.amity.add_person('sam maina', 'staff')
@@ -134,6 +140,7 @@ class TestAmity(unittest.TestCase):
         self.amity.print_un_allocated(None)
 
     def test_print_unallocated_people_to_a_file(self):
+        '''test that unallocated people are printed to a file'''
         self.amity.create_room('hogwarts', 'office')
         self.amity.create_room('php', 'livingspace')
         self.amity.add_person('sam maina', 'staff')
@@ -142,9 +149,54 @@ class TestAmity(unittest.TestCase):
         self.amity.print_un_allocated('unallocated.txt')
 
     def test_members_of_a_room_are_printed(self):
+        '''test that members of a room are printed'''
         self.amity.create_room('hogwarts', 'office')
         self.amity.create_room('php', 'livingspace')
         self.amity.add_person('sam gaamwa', 'fellow')
         self.amity.add_person('sam maina', 'staff')
         self.amity.add_person('tom wilkins', 'fellow')
         self.amity.print_room('hogwarts')
+
+    def test_people_are_added_to_allocated_(self):
+        '''test that alloacted people are added to a list'''
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        allocated = self.amity.allocated
+        self.assertEqual(len(allocated), 0)
+        self.amity.add_person('sam gaamwa', 'fellow')
+        self.amity.add_person('sam maina', 'staff')
+        self.amity.add_person('tom wilkins', 'fellow')
+        self.amity.print_allocations(None)
+        self.assertEqual(len(allocated), 3)
+
+    def test_staff_are_allocated_to_allocated_list(self):
+        '''test that an allocated staff is added to allocated list'''
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        self.amity.add_person('sam maina', 'staff')
+        self.amity.print_allocations(None)
+        allocated = self.amity.allocated
+        staff = allocated[0]
+        self.assertIsInstance(staff, Staff)
+
+    def test_fellow_are_allocated_to_allocated_list(self):
+        '''test that an allocated staff is added to allocated list'''
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        self.amity.add_person('sam maina', 'fellow')
+        self.amity.print_allocations(None)
+        allocated = self.amity.allocated
+        fellow = allocated[0]
+        self.assertIsInstance(fellow, Fellow)
+
+    def test_unalloacted_people_are_added_to_unallocated_list(self):
+        '''test that fellows without living space are added to a list'''
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        unallocated = self.amity.unallocated
+        self.assertEqual(len(unallocated), 0)
+        self.amity.add_person('sam gaamwa', 'fellow')
+        self.amity.add_person('sam maina', 'staff')
+        self.amity.add_person('tom wilkins', 'fellow')
+        self.amity.print_un_allocated(None)
+        self.assertEqual(len(unallocated), 2)
