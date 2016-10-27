@@ -1,9 +1,10 @@
+from database import Office as Ofisi, LivingSpace as Hostel, Person as Mtu
 from person import Fellow, Staff
 from rooms import LivingSpace, Office
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import random
-from database import Office as Ofisi, LivingSpace as Hostel, Person as Mtu
+from database import Base
 
 
 class Amity(object):
@@ -16,11 +17,11 @@ class Amity(object):
         self.all_people = []
         self.fellows = []
         self.staff = []
+        self.allocated = []
+        self.unallocated = []
 
     def create_room(self, name, type_room):
         '''this method create rooms.its can create multiple rooms'''
-        print name
-        print type_room
         if type_room.lower() == 'livingspace':
             room = LivingSpace(name)
             self.livingspaces.append(room)
@@ -121,7 +122,7 @@ class Amity(object):
                     pass
                 self.add_person(name, person_role, staying)
 
-    def print_allocations(self, filename='nofilename'):
+    def print_allocations(self, filename):
         '''this function prints everyone who has been alloacted a room'''
         rooms = self.all_rooms
         if filename is None:
@@ -129,14 +130,16 @@ class Amity(object):
             for room in rooms:
                 # go through each member in a room
                 for member in room.members:
-                    print member
+                    self.allocated.append(member)
+            print self.allocated
         else:
             for room in rooms:
                 for member in room.members:
+                    self.allocated.append(member)
                     with open(filename, 'a') as allocated_people:
                         allocated_people.write(member.name)
 
-    def print_un_allocated(self, filename='nofilename'):
+    def print_un_allocated(self, filename):
         '''this fuction prints a list of all fellows without living spaces'''
         if filename is None:
             allocated_people = []
@@ -147,16 +150,15 @@ class Amity(object):
             fellows = self.fellows
             for fellow in fellows:
                 if fellow not in allocated_people:
-                    print fellow.name
+                    self.unallocated.append(fellow)
+
+            print self.unallocated
         else:
-            allocated_people = []
-            hostels = self.livingspaces
-            for hostel in hostels:
-                for member in hostel.members:
-                    allocated_people.append(member)
+            allocated_people = self.allocated
             fellows = self.fellows
             for fellow in fellows:
                 if fellow not in allocated_people:
+                    self.unallocated.append(fellow)
                     with open(filename, 'a') as unallocated_people:
                         unallocated_people.write(fellow.name)
 
@@ -169,10 +171,15 @@ class Amity(object):
                     print member.name
 
     def save_state(self, db_name='amity_db'):
-        if db_name is None:
-            engine = create_engine('sqlite:///amity_db')
-        else:
+        '''This methods saves informatin from the application to the database'''
+
+        if db_name:
             engine = create_engine('sqlite:///%s' % db_name)
+
+        else:
+            engine = create_engine('sqlite:///amity_db')
+
+        Base.metadata.create_all(engine)
         Session = sessionmaker(bind=engine)
         session = Session()
         # go through every person
@@ -220,6 +227,7 @@ class Amity(object):
                 hostel_room = Hostel()
                 hostel_room.name = room.name
                 session.add(hostel_room)
+                session.commit()
 
     def load_state(self, db_name='amity_db'):
         '''this method gets data from the database and feeds it to the app'''
