@@ -21,7 +21,7 @@ class Amity(object):
         self.unallocated = []
 
     def create_room(self, name, type_room):
-        '''this method create rooms.its can create multiple rooms'''
+        '''this method create rooms.it can create multiple rooms'''
         if type_room.lower() == 'livingspace':
             room = LivingSpace(name)
             self.livingspaces.append(room)
