@@ -124,3 +124,27 @@ class TestAmity(unittest.TestCase):
         self.amity.print_un_allocated(None)
         unallocated = self.amity.unallocated
         self.assertEqual(len(unallocated), 2)
+
+    def test_print_unallocated_people_to_terminal(self):
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        self.amity.add_person('sam maina', 'staff')
+        self.amity.add_person('tom wilkins', 'fellow')
+        self.amity.add_person('valt honks', 'fellow', 'Y')
+        self.amity.print_un_allocated(None)
+
+    def test_print_unallocated_people_to_a_file(self):
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        self.amity.add_person('sam maina', 'staff')
+        self.amity.add_person('tom wilkins', 'fellow')
+        self.amity.add_person('valt honks', 'fellow', 'Y')
+        self.amity.print_un_allocated('unallocated.txt')
+
+    def test_members_of_a_room_are_printed(self):
+        self.amity.create_room('hogwarts', 'office')
+        self.amity.create_room('php', 'livingspace')
+        self.amity.add_person('sam gaamwa', 'fellow')
+        self.amity.add_person('sam maina', 'staff')
+        self.amity.add_person('tom wilkins', 'fellow')
+        self.amity.print_room('hogwarts')
