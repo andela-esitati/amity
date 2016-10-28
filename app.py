@@ -1,7 +1,7 @@
 """
 Usage:
     create_room (Living|Office) <room_name>...
-    add_person <person_name> (Fellow|Staff) [--accomodation=no]
+    add_person <person_name> (Fellow|Staff) [<accommodation>]
     reallocate_person <person_name> <new_room_name>
     load_people <filename>
     print_allocations [<file_name>]
@@ -22,7 +22,7 @@ Options:
 from docopt import docopt, DocoptExit
 import cmd
 from app.amity import Amity
-from app.person import Fellow,Staff
+from app.person import Fellow, Staff
 
 amity = Amity()
 
@@ -56,11 +56,6 @@ def docopt_cmd(func):
     return fn
 
 
-def intro():
-    print ("WELCOME TO AMITY SPACE ALLOCATION!".center(70))
-    print ("Allocate rooms to staff and fellows in Amity".center(70))
-    print ("-> help".center(70))
-    print ("-> quit".center(70))
 
 
 class AmityInteractive(cmd.Cmd):
@@ -80,11 +75,11 @@ class AmityInteractive(cmd.Cmd):
         """
         Creates a person and assign them to a room in Amity.
         Usage:
-            add_person <first_name> <last_name> <role> [--wants_accomodation='N']
+            add_person <first_name> <last_name> <role> [<accomodation>]
         """
         name = arg['<first_name>'] + " " + arg["<last_name>"]
         role = arg['<role>']
-        wants_accomodation = arg['--wants_accomodation']
+        wants_accomodation = arg['<accomodation>']
         amity.add_person(name, role, wants_accomodation)
         print '%s has been created and given a room' % name
 
@@ -113,7 +108,10 @@ class AmityInteractive(cmd.Cmd):
         for person in amity.all_people:
             if isinstance(person, Fellow):
                 office = person.office.name
-                livingspace = person.hostel.name
+                livingspace = ""
+                if person.hostel is not None:
+                    livingspace = person.hostel.name
+
                 print '%s %s %s' % (person, office, livingspace)
             elif isinstance(person, Staff):
                 office = person.office.name
