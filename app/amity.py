@@ -128,10 +128,12 @@ class Amity(object):
         if filename is None:
             # go through all rooms in amity
             for room in rooms:
+                text = '\n\t' + room.name + '\n' + '-' * 50
+                print text
                 # go through each member in a room
                 for member in room.members:
                     self.allocated.append(member)
-            print self.allocated
+                    print '\t' + member.name
         else:
             for room in rooms:
                 for member in room.members:
@@ -165,10 +167,11 @@ class Amity(object):
     def print_room(self, room_name):
         '''this function prints the members of a given room'''
         rooms = self.all_rooms
+        print room_name + '\n' +'-'*40
         for room in rooms:
             if room_name == room.name:
                 for member in room.members:
-                    print member.name
+                    print member.name 
 
     def save_state(self, db_name='amity_db'):
         '''This methods saves informatin from the application to the database'''
@@ -240,17 +243,6 @@ class Amity(object):
         people = session.query(Mtu).all()
         offices = session.query(Ofisi).all()
         livingspaces = session.query(Hostel).all()
-        for person in people:
-            full_name = person.name
-            role = person.role
-            if role == 'Staff':
-                person_object = Staff(full_name)
-                self.staff.append(person_object)
-                self.all_people.append(person_object)
-            elif role == 'Fellow':
-                person_object = Fellow(full_name)
-                self.fellows.append(person_object)
-                self.all_people.append(person_object)
 
         for office in offices:
             office_name = office.name
@@ -264,6 +256,39 @@ class Amity(object):
             self.livingspaces.append(hostel_object)
             self.all_rooms.append(hostel_object)
 
+        for person in people:
+            full_name = person.name
+            role = person.role
+            office = person.office
+            if role == 'Staff':
+                p = Staff(full_name)
+                for room in self.all_rooms:
+                    if office == room.name:
+                        room.members.append(p)
+                        break
+            elif role == 'Fellow':
+                p = Fellow(full_name)
+                for room in self.all_rooms:
+                    if office == room.name:
+                        room.members.append(p)
+                        break
+
+                l_space = person.living_space
+                for room in self.all_rooms:
+                    if room.name == l_space:
+                        room.members.append(p)                 
+                    
+                    
+            if role == 'Staff':
+                person_object = Staff(full_name)
+                self.staff.append(person_object)
+                self.all_people.append(person_object)
+            elif role == 'Fellow':
+                person_object = Fellow(full_name)
+                self.fellows.append(person_object)
+                self.all_people.append(person_object)
+
+        
 
 # amity = Amity()
 # amity.create_room('valhalla', 'office')
