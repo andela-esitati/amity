@@ -1,3 +1,4 @@
+
 """
 Usage:
     create_room (Living|Office) <room_name>...
@@ -128,7 +129,10 @@ class AmityInteractive(cmd.Cmd):
         """
         filename = arg['<file_name>']
         amity.print_allocations(filename)
-        print 'The names have been printed to %s' % filename
+        if filename != None:
+            print 'The names have been printed to %s' % filename
+        else:
+            print ''
 
     @docopt_cmd
     def do_print_un_allocated(self, arg):
@@ -139,14 +143,17 @@ class AmityInteractive(cmd.Cmd):
         """
         filename = arg['<file_name>']
         amity.print_un_allocated(filename)
-        print 'The names have been printed to %s' % filename
+        if filename != None:
+            print 'The names have been printed to %s' % filename
+        else:
+            print ''
 
     @docopt_cmd
     def do_print_room(self, arg):
         """
         This function prints the members of a given room
         Usage:
-            print_room <room_name>
+            print_room [<room_name>]
         """
         room_name = arg['<room_name>']
         amity.print_room(room_name)
@@ -166,9 +173,9 @@ class AmityInteractive(cmd.Cmd):
         """
         This method loads information from the databse to the application
         Usage:
-            load_state [--db_name=amity_db]
+            load_state <db_name>
         """
-        db_name = arg['--db_name']
+        db_name = arg['<db_name>']
         amity.load_state(db_name)
 
 
