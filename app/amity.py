@@ -167,11 +167,11 @@ class Amity(object):
     def print_room(self, room_name):
         '''this function prints the members of a given room'''
         rooms = self.all_rooms
-        print room_name + '\n' +'-'*40
+        print room_name + '\n' + '-' * 40
         for room in rooms:
             if room_name == room.name:
                 for member in room.members:
-                    print member.name 
+                    print member.name
 
     def save_state(self, db_name='amity_db'):
         '''This methods saves informatin from the application to the database'''
@@ -276,9 +276,8 @@ class Amity(object):
                 l_space = person.living_space
                 for room in self.all_rooms:
                     if room.name == l_space:
-                        room.members.append(p)                 
-                    
-                    
+                        room.members.append(p)
+
             if role == 'Staff':
                 person_object = Staff(full_name)
                 self.staff.append(person_object)
@@ -288,7 +287,6 @@ class Amity(object):
                 self.fellows.append(person_object)
                 self.all_people.append(person_object)
 
-        
 
 # amity = Amity()
 # amity.create_room('valhalla', 'office')
