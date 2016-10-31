@@ -28,7 +28,7 @@ $ pip install -r requirements.txt
 
 Run tests to ensure everything is working as expected:
 ~~~
-$ nosetests
+$ cd test\ nosetests
 ............
 ----------------------------------------------------------------------
 Ran 20 tests in 0.232s
@@ -76,7 +76,7 @@ create_room <room_name> <room_type>
 Adds a person to the system and allocates the person to a random roomå.
 `wants_accommodation` here is an optional argument which can be either Y or N. The default value if it is not provided is N.
 ~~~
-(Amity) add_person Jimmy Kamau Fellow Y
+(Amity) add_person Elsis Sitati Fellow Y
 FELLOW Elsis Sitati has been added to the system. 
 ~~~
 ~~~
