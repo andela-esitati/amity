@@ -150,8 +150,7 @@ Prints a list of unallocated people to the screen.
 
 Specifying the optional `-o` option here outputs the information to the txt file specified by `<file_location>`.
 
-### Database operations
-#### Saving to database
+
 
 
 
