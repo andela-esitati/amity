@@ -1,15 +1,16 @@
 
 """
 Usage:
-    create_room (Living|Office) <room_name>...
-    add_person <person_name> (Fellow|Staff) [<accommodation>]
-    reallocate_person <person_name> <new_room_name>
-    load_people <filename>
+    create_room <room_name> <room_type>
+    add_person <first_name> <last_name> <role> [<accomodation>]
+    reallocate_person <first_name> <last_name> <new_room>
+    load_people <file_name>
     print_allocations [<file_name>]
-    print_unallocated [--o=filename]
-    print_room <room_name>
-    save_state [--db=sqalchemy_database]
-    load_state <sqalchemy_database>
+    print_un_allocated [<file_name>]
+    print_room [<room_name>]
+    save_state [--db_name=amity_db]
+    load_state <db_name>
+
     quit
 
 Options:
