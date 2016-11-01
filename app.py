@@ -95,7 +95,7 @@ class AmityInteractive(cmd.Cmd):
         name = arg['<first_name>'] + " " + arg["<last_name>"]
         new_room = arg['<new_room>']
         amity.reallocate_person(name, new_room)
-        print '%s now has %s' % (amity.office_rooms[1], amity.office_rooms[1].members)
+        
 
     @docopt_cmd
     def do_load_people(self, arg):
