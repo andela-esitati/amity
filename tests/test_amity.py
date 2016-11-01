@@ -1,6 +1,6 @@
 import unittest
-from ..app.amity import Amity
-from ..app.person import Fellow, Staff
+from  app.amity import Amity
+from app.person import Fellow, Staff
 
 
 class TestAmity(unittest.TestCase):
