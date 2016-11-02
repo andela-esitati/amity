@@ -58,8 +58,6 @@ def docopt_cmd(func):
     return fn
 
 
-
-
 class AmityInteractive(cmd.Cmd):
     prompt = 'Amity#  '
 
@@ -69,7 +67,10 @@ class AmityInteractive(cmd.Cmd):
         room_name = arg['<room_name>']
         room_type = arg['<room_type>']
 
-        amity.create_room(room_name, room_type)
+        create_room_status = amity.create_room(room_name, room_type)
+        if create_room_status == 'Invalid Room Type':
+            print(create_room_status)
+            return
         print amity.all_rooms
 
     @docopt_cmd
@@ -82,7 +83,13 @@ class AmityInteractive(cmd.Cmd):
         name = arg['<first_name>'] + " " + arg["<last_name>"]
         role = arg['<role>']
         wants_accomodation = arg['<accomodation>']
-        amity.add_person(name, role, wants_accomodation)
+        add_status = amity.add_person(name, role, wants_accomodation)
+        if add_status == 'Invalid Role':
+            print('Invalid Employee Role')
+            return
+        elif add_status == 'No livingspace available':
+            print('No livingspace available')
+            return
         print '%s has been created and given a room' % name
 
     @docopt_cmd
@@ -95,7 +102,6 @@ class AmityInteractive(cmd.Cmd):
         name = arg['<first_name>'] + " " + arg["<last_name>"]
         new_room = arg['<new_room>']
         amity.reallocate_person(name, new_room)
-        
 
     @docopt_cmd
     def do_load_people(self, arg):
@@ -130,7 +136,7 @@ class AmityInteractive(cmd.Cmd):
         """
         filename = arg['<file_name>']
         amity.print_allocations(filename)
-        if filename != None:
+        if filename is not None:
             print 'The names have been printed to %s' % filename
         else:
             print ''
@@ -144,7 +150,7 @@ class AmityInteractive(cmd.Cmd):
         """
         filename = arg['<file_name>']
         amity.print_un_allocated(filename)
-        if filename != None:
+        if filename is not None:
             print 'The names have been printed to %s' % filename
         else:
             print ''
@@ -181,4 +187,7 @@ class AmityInteractive(cmd.Cmd):
 
 
 if __name__ == '__main__':
-    AmityInteractive().cmdloop()
+    try:
+        AmityInteractive().cmdloop()
+    except KeyboardInterrupt:
+        print('Exiting Application')
