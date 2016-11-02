@@ -7,7 +7,6 @@ class Room(object):
         self.name = name
         self.capacity = capacity
         self.members = []
-        self.is_not_full = len(self.members) < capacity
 
     def __repr__(self):
         return '<Room %s >' % self.name
@@ -18,8 +17,8 @@ class Office(Room):
     def __init__(self, name):
         super(Office, self).__init__(name, capacity=6)
 
-        def __repr__(self):
-            return '<Office %s >' % self.name
+    def __repr__(self):
+        return '<Office %s >' % self.name
 
 
 class LivingSpace(Room):
