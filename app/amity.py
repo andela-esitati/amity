@@ -31,6 +31,8 @@ class Amity(object):
             room = Office(name)
             self.office_rooms.append(room)
             self.all_rooms.append(room)
+        else:
+            return 'Invalid Room Type'
 
     def add_person(self, name, role, wants_accomodation='N'):
         '''this method creates a person and allocats the person a room'''
@@ -38,7 +40,11 @@ class Amity(object):
             person = Fellow(name)
             # pick an office at random from the office_list
             # import pdb; pdb.set_trace()
-            randomized_office = random.choice(self.office_rooms)
+            try:
+                randomized_office = random.choice(self.office_rooms)
+            except IndexError:
+                print('No rooms available')
+                return
             # assign an office to a person
             if randomized_office.is_not_full:
                 person.office = randomized_office
@@ -46,7 +52,11 @@ class Amity(object):
                 randomized_office.members.append(person)
             if wants_accomodation == 'Y':
                 # pick a random living space from living space lists
-                random_livingspace = random.choice(self.livingspaces)
+                try:
+                    random_livingspace = random.choice(self.livingspaces)
+                except IndexError:
+                    return 'No livingspace available'
+
                 if random_livingspace.is_not_full:
                     # assign living space to a person
                     person.hostel = random_livingspace
@@ -71,6 +81,8 @@ class Amity(object):
             self.staff.append(person)
             # add staff to all people
             self.all_people.append(person)
+        else:
+            return 'Invalid Role'
 
     def reallocate_person(self, name, new_room):
         # go through the list of all people
@@ -125,6 +137,9 @@ class Amity(object):
     def print_allocations(self, filename):
         '''this function prints everyone who has been alloacted a room'''
         rooms = self.all_rooms
+        if len(self.all_rooms) == 0:
+            print('No Rooms Available')
+            return
         if filename is None:
             # go through all rooms in amity
             for room in rooms:
@@ -174,7 +189,8 @@ class Amity(object):
                     print member.name
 
     def save_state(self, db_name='amity_db'):
-        '''This methods saves informatin from the application to the database'''
+        '''This methods saves informatin from
+        the application to the database'''
 
         if db_name:
             engine = create_engine('sqlite:///%s' % db_name)
@@ -288,35 +304,3 @@ class Amity(object):
                 self.all_people.append(person_object)
 
 
-# amity = Amity()
-# amity.create_room('valhalla', 'office')
-# amity.create_room('php', 'livingspace')
-# amity.create_room('haskel', 'livingspace')
-# amity.add_person('sam maina', 'fellow')
-# print amity.all_rooms
-# print amity.office_rooms
-# y = amity.fellows[0]
-# print y
-# print y.office
-# print amity.office_rooms[0].members
-# amity.create_room('hogwarts', 'office')
-# print amity.all_rooms
-# print amity.office_rooms
-# amity.reallocate_person('sam maina', 'hogwarts')
-# y = amity.fellows[0]
-# print y.office
-# print amity.office_rooms[0].members
-# print amity.office_rooms[1].members
-# print 'hae'
-# amity.load_people('people.txt')
-# print amity.all_people
-# print 'hae'
-# amity.print_allocations()
-# print 'unallocated'
-# amity.print_un_allocated()
-# print 'members'
-# amity.print_room('php')
-# print 'save state'
-# amity.save_state()
-# print 'load_state'
-# amity.load_state()
