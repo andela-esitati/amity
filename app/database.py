@@ -18,7 +18,8 @@ class Person(Base):
     living_space = Column(String(50))
 
     def __repr__(self):
-        return 'Person %s role %s' % (self.name, self.role)
+        return 'Person %s role %s office %s LSP: %s' % (
+            self.name, self.role, self.office. self.living_space)
 
 
 class Office(Base):
@@ -39,5 +40,6 @@ class LivingSpace(Base):
 
     def __repr__(self):
         return 'Livingspace %s' % (self.name)
+
 
 Base.metadata.create_all(engine)
