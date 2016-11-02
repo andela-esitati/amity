@@ -42,18 +42,25 @@ class Amity(object):
             # import pdb; pdb.set_trace()
             try:
                 randomized_office = random.choice(self.office_rooms)
+                room_status = self.is_room_full(randomized_office)
+                if room_status:
+                    print 'Room is not available'
+                    return
             except IndexError:
                 print('No rooms available')
                 return
             # assign an office to a person
-            if randomized_office.is_not_full:
-                person.office = randomized_office
+            # if randomized_office.is_not_full:
                 # adding a person to the member list in office
-                randomized_office.members.append(person)
+            randomized_office.members.append(person)
             if wants_accomodation == 'Y':
                 # pick a random living space from living space lists
                 try:
                     random_livingspace = random.choice(self.livingspaces)
+                    room_status = self.is_room_full(random_livingspace)
+                    if room_status:
+                        print 'Room is not available'
+                        return
                 except IndexError:
                     return 'No livingspace available'
 
@@ -70,8 +77,16 @@ class Amity(object):
         elif role == 'staff':
             person = Staff(name)
             # pick a random office
-            randomized_office = random.choice(self.office_rooms)
-            if randomized_office.is_not_full:
+            try:
+                randomized_office = random.choice(self.office_rooms)
+                room_status = self.is_room_full(randomized_office)
+                if room_status:
+                    print 'Room is not available'
+                    return
+            except IndexError:
+                print('No rooms available')
+                return
+            if randomized_office.is_not_full is True:
                 # assign an office to a person
                 person.office = randomized_office
                 # adding a person to the member list in staff
@@ -83,6 +98,15 @@ class Amity(object):
             self.all_people.append(person)
         else:
             return 'Invalid Role'
+
+    def is_room_full(self, random_room):
+        '''this method checks a room is full'''
+        if isinstance(random_room, Office):
+            if len(random_room.members) == random_room.capacity:
+                return True
+        if isinstance(random_room, LivingSpace):
+            if len(random_room.members) == random_room.capacity:
+                return True
 
     def reallocate_person(self, name, new_room):
         # go through the list of all people
@@ -302,5 +326,3 @@ class Amity(object):
                 person_object = Fellow(full_name)
                 self.fellows.append(person_object)
                 self.all_people.append(person_object)
-
-
