@@ -1,5 +1,5 @@
 import unittest
-from  app.amity import Amity
+from app.amity import Amity
 from app.person import Fellow, Staff
 
 
@@ -87,7 +87,8 @@ class TestAmity(unittest.TestCase):
         self.assertEqual(new_office_name, 'winterfell')
 
     def test_a_person_has_been_removed_from_a_room_after_reallocation(self):
-        '''test that a person has been removed from a room after reallocation'''
+        '''test that a person has been removed
+        from a room after reallocation'''
         self.amity.create_room('hogwarts', 'office')
         self.amity.add_person('rehema', 'fellow')
         office = self.amity.office_rooms[0]
