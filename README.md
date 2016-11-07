@@ -69,12 +69,13 @@ Typing `help` with a command shows information about that command:
 ~~~
 create_room <room_name> <room_type>
 ~~~
+Creates a room and adds it to rooms  list
 
 ### Add person
 ~~~
 (Amity)     add_person <first_name> <last_name> <role> [<accomodation>]
 
-Adds a person to the system and allocates the person to a random roomå.
+Adds a person to the system and allocates the person to a random room
 `wants_accommodation` here is an optional argument which can be either Y or N. The default value if it is not provided is N.
 ~~~
 (Amity) add_person Elsis Sitati Fellow Y
