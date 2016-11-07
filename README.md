@@ -49,11 +49,6 @@ Typing help gives you a list of available commands
 ~~~
 (Amity) help
 
-Documented commands (type help <topic>):
-========================================
-add_person     help         print_unallocated  save_state
-create_room    load_people  print_allocations  quit
-load_state     print_room     reallocate_person
 ~~~
 Typing `help` with a command shows information about that command:
 ~~~
