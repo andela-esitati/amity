@@ -76,7 +76,7 @@ Specify if the room is an office or living space by entering the required option
 ~~~
 (Amity) create_room Room1 office
 Room1 has been created successfully
-
+~~~
 
 ### Add person
 ~~~
