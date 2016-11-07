@@ -74,17 +74,11 @@ create_room <room_name> <room_type>
 ~~~
 (Amity)     add_person <first_name> <last_name> <role> [<accomodation>]
 
-<<<<<<< HEAD
-Adds a person to the system and allocates the person to a random room.
-`wants_accommodation` here is an optional argument which can be either Y or N. The default value if it is not provided is N.
-~~~
-(Amity) add_person Jimmy Kamau Fellow Y
-=======
 Adds a person to the system and allocates the person to a random roomå.
 `wants_accommodation` here is an optional argument which can be either Y or N. The default value if it is not provided is N.
 ~~~
 (Amity) add_person Elsis Sitati Fellow Y
->>>>>>> edf56f2efc36a2307d7da945311d9cd7f49bb92c
+
 FELLOW Elsis Sitati has been added to the system. 
 ~~~
 ~~~
