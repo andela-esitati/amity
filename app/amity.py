@@ -46,7 +46,7 @@ class Amity(object):
         return livingspaces_with_space
 
     def add_person(self, name, role, wants_accomodation='N'):
-        '''this method creates a person and allocats the person a room'''  
+        '''this method creates a person and allocats the person a room'''
         # get offices with spaces
         offices_with_space = self.offices_with_space()
 
@@ -126,21 +126,28 @@ class Amity(object):
             if new_room == room.name:
                 # check wether room is an office
                 if isinstance(room, Office):
-                    # check that room is not full
-                    if room.is_not_full:
-                        # add person to members of a room
+                    # add person to members of a room
+                    check_capacity = self.is_room_full(room)
+                    if not check_capacity:
                         room.members.append(person_found)
                         # remove the person from the previous office
-                        person_found.office.members.remove(person_found)
+                        current_room = person_found.office
+                        for room in self.all_rooms:
+                            if room.name == current_room:
+                                room.members.remove(person_found)
                         # renaming person office
-                        person_found.office = room
+                        person_found.office = room.name
+
                 # check wether  room is a living space
                 if isinstance(room, LivingSpace):
-                    # check that room is not full
-                    if room.is_not_full:
+                    check_capacity = self.is_room_full(room)
+                    if not check_capacity:
                         room.members.append(person_found)
-                        person_found.hostel.members.remove(person_found)
-                        person_found.hostel = person_found
+                        current_room = person_found.living_space
+                        for room in self.all_rooms:
+                            if room.name == current_room:
+                                room.members.remove(person_found)
+                        person_found.living_space = room.name
 
     def load_people(self, file):
         '''this function reads a lists of people and allocates them a room'''
@@ -185,6 +192,10 @@ class Amity(object):
 
     def print_un_allocated(self, filename):
         '''this fuction prints a list of all fellows without living spaces'''
+        if not self.all_rooms:
+            print('No Rooms Available')
+            return 'No Rooms'
+
         for person in self.unallocated:
             if isinstance(person, Staff):
                 print(person.name + '\t\t' + 'Office')
@@ -213,6 +224,7 @@ class Amity(object):
                                 person.living_space is 'N':
                             unallocated.write(
                                 person.name + '\t\t' + 'Livingspace')
+        return 'Printed'
 
     def print_room(self, room_name):
         '''this function prints the members of a given room'''
@@ -222,6 +234,7 @@ class Amity(object):
             if room_name == room.name:
                 for member in room.members:
                     print member.name
+        return 'members have been printed'
 
     def save_state(self, db_name='amity_db'):
         '''This methods saves informatin from
