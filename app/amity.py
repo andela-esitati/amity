@@ -12,88 +12,96 @@ class Amity(object):
 
     def __init__(self):
         self.all_rooms = []
-        self.office_rooms = []
-        self.livingspaces = []
         self.all_people = []
-        self.fellows = []
-        self.staff = []
-        self.allocated = []
         self.unallocated = []
 
     def create_room(self, name, type_room):
         '''this method create rooms.it can create multiple rooms'''
         if type_room.lower() == 'livingspace':
             room = LivingSpace(name)
-            self.livingspaces.append(room)
             self.all_rooms.append(room)
 
         elif type_room.lower() == 'office':
             room = Office(name)
-            self.office_rooms.append(room)
             self.all_rooms.append(room)
         else:
             return 'Invalid Room Type'
 
+    def offices_with_space(self):
+        offices_with_space = []
+        for room in self.all_rooms:
+            if isinstance(room, Office):
+                check_capacity = self.is_room_full(room)
+                if not check_capacity:
+                    offices_with_space.append(room)
+        return offices_with_space
+
+    def livingspaces_with_space(self):
+        livingspaces_with_space = []
+        for room in self.all_rooms:
+            if isinstance(room, LivingSpace):
+                check_capacity = self.is_room_full(room)
+                if not check_capacity:
+                    livingspaces_with_space.append(room)
+        return livingspaces_with_space
+
     def add_person(self, name, role, wants_accomodation='N'):
         '''this method creates a person and allocats the person a room'''
-        if role == 'fellow':
-            person = Fellow(name)
-            # pick an office at random from the office_list
-            # import pdb; pdb.set_trace()
-            try:
-                randomized_office = random.choice(self.office_rooms)
-                room_status = self.is_room_full(randomized_office)
-                if room_status:
-                    print 'Room is not available'
-                    return
-            except IndexError:
-                print('No rooms available')
-                return
-            # assign an office to a person
-            # if randomized_office.is_not_full:
-                # adding a person to the member list in office
-            randomized_office.members.append(person)
-            if wants_accomodation == 'Y':
-                # pick a random living space from living space lists
-                try:
-                    random_livingspace = random.choice(self.livingspaces)
-                    room_status = self.is_room_full(random_livingspace)
-                    if room_status:
-                        print 'Room is not available'
-                        return
-                except IndexError:
-                    return 'No livingspace available'
+        # get offices with spaces
+        offices_with_space = self.offices_with_space()
 
-                if random_livingspace.is_not_full:
-                    # assign living space to a person
-                    person.hostel = random_livingspace
-                    # add a person to the member list in office
-                    random_livingspace.members.append(person)
-            # add the person to fellows list
-            self.fellows.append(person)
-            # add the person to all rooms
-            self.all_people.append(person)
+        if role == 'fellow':
+            livingspaces_with_space = self.livingspaces_with_space()
+            person = Fellow(name)
+            # check if its there is no office with space
+            if not offices_with_space and not livingspaces_with_space:
+                person.living_space = 'N'
+                person.office = 'N'
+                self.unallocated.append(person)
+                print 'No Rooms with spaces'
+                return
+
+            if offices_with_space:
+                randomized_office = random.choice(offices_with_space)
+                randomized_office.members.append(person)
+                self.all_people.append(person)
+                person.office = randomized_office.name
+            else:
+                person.office = 'N'
+                self.unallocated.append(person)
+
+            if not wants_accomodation or wants_accomodation is 'N':
+                person.living_space = 'N'
+                self.unallocated.append(person)
+                return
+            livingspaces_with_space = self.livingspaces_with_space()
+            if livingspaces_with_space:
+                randomized_livingspace = random.choice(livingspaces_with_space)
+                randomized_livingspace.members.append(person)
+                person.living_space = randomized_livingspace.name
+                if person not in self.all_people:
+                    self.all_people.append(person)
+            else:
+                if person in self.unallocated:
+                    return
+                else:
+                    person.living_space = 'N'
+                    self.unallocated.append(person)
 
         elif role == 'staff':
             person = Staff(name)
-            # pick a random office
-            try:
-                randomized_office = random.choice(self.office_rooms)
-                room_status = self.is_room_full(randomized_office)
-                if room_status:
-                    print 'Room is not available'
-                    return
-            except IndexError:
-                print('No rooms available')
+            if not offices_with_space:
+                person.office = 'N'
+                self.unallocated.append(person)
+                print('No offices available')
                 return
-            if randomized_office.is_not_full is True:
-                # assign an office to a person
-                person.office = randomized_office
-                # adding a person to the member list in staff
-                randomized_office.members.append(person)
 
-            # assign the person to the staff list
-            self.staff.append(person)
+            randomized_office = random.choice(offices_with_space)
+
+            # assign an office to a person
+            person.office = randomized_office.name
+            # adding a person to the member list in staff
+            randomized_office.members.append(person)
             # add staff to all people
             self.all_people.append(person)
         else:
@@ -101,12 +109,8 @@ class Amity(object):
 
     def is_room_full(self, random_room):
         '''this method checks a room is full'''
-        if isinstance(random_room, Office):
-            if len(random_room.members) == random_room.capacity:
-                return True
-        if isinstance(random_room, LivingSpace):
-            if len(random_room.members) == random_room.capacity:
-                return True
+        if len(random_room.members) == random_room.capacity:
+            return True
 
     def reallocate_person(self, name, new_room):
         # go through the list of all people
@@ -122,24 +126,32 @@ class Amity(object):
             if new_room == room.name:
                 # check wether room is an office
                 if isinstance(room, Office):
-                    # check that room is not full
-                    if room.is_not_full:
-                        # add person to members of a room
+                    # add person to members of a room
+                    check_capacity = self.is_room_full(room)
+                    if not check_capacity:
                         room.members.append(person_found)
                         # remove the person from the previous office
-                        person_found.office.members.remove(person_found)
+                        current_room = person_found.office
+                        for room in self.all_rooms:
+                            if room.name == current_room:
+                                room.members.remove(person_found)
                         # renaming person office
-                        person_found.office = room
+                        person_found.office = room.name
+
                 # check wether  room is a living space
                 if isinstance(room, LivingSpace):
-                    # check that room is not full
-                    if room.is_not_full:
+                    check_capacity = self.is_room_full(room)
+                    if not check_capacity:
                         room.members.append(person_found)
-                        person_found.hostel.members.remove(person_found)
-                        person_found.hostel = person_found
+                        current_room = person_found.living_space
+                        for room in self.all_rooms:
+                            if room.name == current_room:
+                                room.members.remove(person_found)
+                        person_found.living_space = room.name
 
     def load_people(self, file):
         '''this function reads a lists of people and allocates them a room'''
+
         with open(file, 'r') as file:
             # read the file content line by line
             file_content = file.readlines()
@@ -160,48 +172,59 @@ class Amity(object):
 
     def print_allocations(self, filename):
         '''this function prints everyone who has been alloacted a room'''
-        rooms = self.all_rooms
-        if len(self.all_rooms) == 0:
+        if not self.all_rooms:
             print('No Rooms Available')
-            return
-        if filename is None:
-            # go through all rooms in amity
-            for room in rooms:
-                text = '\n\t' + room.name + '\n' + '-' * 50
-                print text
-                # go through each member in a room
-                for member in room.members:
-                    self.allocated.append(member)
-                    print '\t' + member.name
-        else:
-            for room in rooms:
-                for member in room.members:
-                    self.allocated.append(member)
-                    with open(filename, 'a') as allocated_people:
-                        allocated_people.write(member.name)
+            return 'No Rooms'
+
+        # go through all rooms in amity
+        for room in self.all_rooms:
+            text = '\n\t' + room.name + '\n' + '-' * 50
+            print text
+            # go through each member in a room
+            for member in room.members:
+                print '\t' + member.name
+            if filename:
+                for room in self.all_rooms:
+                    for member in room.members:
+                        with open(filename, 'a') as allocated_people:
+                            allocated_people.write(member.name)
+        return 'Printed'
 
     def print_un_allocated(self, filename):
         '''this fuction prints a list of all fellows without living spaces'''
-        if filename is None:
-            allocated_people = []
-            hostels = self.livingspaces
-            for hostel in hostels:
-                for member in hostel.members:
-                    allocated_people.append(member)
-            fellows = self.fellows
-            for fellow in fellows:
-                if fellow not in allocated_people:
-                    self.unallocated.append(fellow)
+        if not self.all_rooms:
+            print('No Rooms Available')
+            return 'No Rooms'
 
-            print self.unallocated
-        else:
-            allocated_people = self.allocated
-            fellows = self.fellows
-            for fellow in fellows:
-                if fellow not in allocated_people:
-                    self.unallocated.append(fellow)
-                    with open(filename, 'a') as unallocated_people:
-                        unallocated_people.write(fellow.name)
+        for person in self.unallocated:
+            if isinstance(person, Staff):
+                print(person.name + '\t\t' + 'Office')
+            elif isinstance(person, Fellow):
+                if person.office is 'N' and person.living_space is 'N':
+                    print(person.name + '\t\t' + 'Office, Livingspace')
+                elif person.office is 'N' and person.living_space is not 'N':
+                    print(person.name + '\t\t' + 'Office')
+                elif person.office is not 'N' and person.living_space is 'N':
+                    print(person.name + '\t\t' + 'Livingspace')
+        if filename:
+            for person in self.unallocated:
+                with open(filename, 'a') as unallocated:
+                    if isinstance(person, Staff):
+                        unallocated.write(
+                            person.name + '\t\t' + 'Office')
+                    elif isinstance(person, Fellow):
+                        if person.office is 'N' and person.living_space is 'N':
+                            unallocated.write(
+                                person.name + '\t\t' + 'Office, Livingspace')
+                        elif person.office is 'N' and \
+                                person.living_space is not 'N':
+                            unallocated.write(
+                                person.name + '\t\t' + 'Office')
+                        elif person.office is not 'N' and \
+                                person.living_space is 'N':
+                            unallocated.write(
+                                person.name + '\t\t' + 'Livingspace')
+        return 'Printed'
 
     def print_room(self, room_name):
         '''this function prints the members of a given room'''
@@ -211,6 +234,7 @@ class Amity(object):
             if room_name == room.name:
                 for member in room.members:
                     print member.name
+        return 'members have been printed'
 
     def save_state(self, db_name='amity_db'):
         '''This methods saves informatin from
@@ -236,11 +260,11 @@ class Amity(object):
                 if person.office is None:
                     fellow.office = 'has no office'
                 else:
-                    fellow.office = person.office.name
-                if person.hostel is None:
+                    fellow.office = person.office
+                if person.living_space is None:
                     fellow.living_space = "no room"
                 else:
-                    fellow.living_space = person.hostel.name
+                    fellow.living_space = person.living_space
 
                 session.add(fellow)
                 session.commit()
@@ -252,7 +276,7 @@ class Amity(object):
                 staff.name = person.name
                 staff.role = 'Staff'
 
-                staff.office = person.office.name
+                staff.office = person.office
 
                 session.add(staff)
                 session.commit()
@@ -287,13 +311,11 @@ class Amity(object):
         for office in offices:
             office_name = office.name
             office_object = Office(office_name)
-            self.office_rooms.append(office_object)
             self.all_rooms.append(office_object)
 
         for hostel in livingspaces:
             hostel_name = hostel.name
             hostel_object = LivingSpace(hostel_name)
-            self.livingspaces.append(hostel_object)
             self.all_rooms.append(hostel_object)
 
         for person in people:
@@ -320,9 +342,7 @@ class Amity(object):
 
             if role == 'Staff':
                 person_object = Staff(full_name)
-                self.staff.append(person_object)
                 self.all_people.append(person_object)
             elif role == 'Fellow':
                 person_object = Fellow(full_name)
-                self.fellows.append(person_object)
                 self.all_people.append(person_object)

@@ -90,7 +90,6 @@ class AmityInteractive(cmd.Cmd):
         elif add_status == 'No livingspace available':
             print('No livingspace available')
             return
-        print '%s has been created and given a room' % name
 
     @docopt_cmd
     def do_reallocate_person(self, arg):
@@ -115,14 +114,14 @@ class AmityInteractive(cmd.Cmd):
         print 'People in %s have been added and allocated rooms' % filename
         for person in amity.all_people:
             if isinstance(person, Fellow):
-                office = person.office.name
+                office = person.office
                 livingspace = ""
-                if person.hostel is not None:
-                    livingspace = person.hostel.name
+                if person.living_space is not None:
+                    livingspace = person.living_space
 
                 print '%s %s %s' % (person, office, livingspace)
             elif isinstance(person, Staff):
-                office = person.office.name
+                office = person.office
                 print '%s %s' % (person, office)
 
         # print '%s ' % amity.all_people
