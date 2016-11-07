@@ -168,9 +168,3 @@ Specifying the optional `-o` option here outputs the information to the txt file
 
 
 
-# To do
-
-* Fix `print_allocations` and `print_unallocated` tests failing if called after index 7
-* Find a better way to order tests
-* Add functionality to automatically allocate unallocated people to rooms
-* Add functionality to delete databases from the interactive interface
